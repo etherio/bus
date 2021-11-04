@@ -43,11 +43,10 @@ function handleEvent() {
 
 function generateToShowMarkers() {
   let center = map.getCenter();
-
   let stops = busStops.filter((stop) => {
     let x = Math.abs(center.lng - stop.lat);
     let y = Math.abs(center.lat - stop.lng);
-    return x < 0.005 || y < 0.005;
+    return x < 0.005 && y < 0.005;
   });
 
   stops.forEach((stop) => {
@@ -56,18 +55,15 @@ function generateToShowMarkers() {
       color: "red",
       scale: 0.75,
     };
-
     let busLineColor = (bus_id) =>
       BUS_LINE_COLORS[busLines.find((bus) => bus.bus_id == bus_id).bus_type] ||
       "bg-gray-200";
-
     let busLinesContext = stop.bus_ids.map(
       (id) =>
         `<div class="w-8 h-8 flex justify-center items-center shadow rounded font-bold text-white ${busLineColor(
           id
         )}">${id}</div>`
     );
-
     let popup = new Popup().setHTML(
       `
     <div>
@@ -77,7 +73,6 @@ function generateToShowMarkers() {
       </div>
     <div>`
     );
-
     let marker = new Marker(option)
       .setLngLat([stop.lat, stop.lng])
       .setPopup(popup)
