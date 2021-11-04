@@ -38,7 +38,7 @@ function handleEvent() {
     } else {
       clearAllMarkers();
     }
-  }, 1200);
+  }, 680);
 }
 
 function generateToShowMarkers() {
