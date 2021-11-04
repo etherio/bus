@@ -2,6 +2,7 @@ import "https://cdn.jsdelivr.net/npm/mapbox-gl@2.5";
 import { busStops } from "./busStops.js";
 import { BUS_LINE_COLORS, busLines } from "./busLines.js";
 
+const RANGE_WITHIN = 0.025;
 const { Map, GeolocateControl, Marker, Popup } = mapboxgl;
 
 let debounce,
@@ -32,12 +33,8 @@ map.on("move", handleEvent);
 function handleEvent() {
   debounce && clearTimeout(debounce);
   debounce = setTimeout(() => {
-    if (map.getZoom() > 13) {
-      clearAllMarkers();
-      generateToShowMarkers();
-    } else {
-      clearAllMarkers();
-    }
+    clearAllMarkers();
+    map.getZoom() > 13 && generateToShowMarkers();
   }, 680);
 }
 
@@ -46,7 +43,7 @@ function generateToShowMarkers() {
   let stops = busStops.filter((stop) => {
     let x = Math.abs(center.lng - stop.lat);
     let y = Math.abs(center.lat - stop.lng);
-    return x < 0.005 && y < 0.005;
+    return x < RANGE_WITHIN && y < RANGE_WITHIN;
   });
 
   stops.forEach((stop) => {
@@ -83,6 +80,7 @@ function generateToShowMarkers() {
 }
 
 function clearAllMarkers() {
+  console.log(__markers.length);
   while (__markers.length) {
     __markers.pop().remove();
   }
