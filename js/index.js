@@ -3,34 +3,12 @@ import "https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js";
 import "https://cdn.jsdelivr.net/npm/mapbox-gl@2.5";
 import { findNearestBusStops } from "./lib/busStops.js";
 import { busLineColor } from "./lib/busLines.js";
+import { km } from "./core/fomula.js";
 
 const { Map, GeolocateControl, Marker, Popup } = mapboxgl;
 
 let debounce,
   __markers = [];
-
-const nearestBusStops = new Vue({
-  el: "#nearest-bus-stops",
-  data: {
-    bottomSheet: "translate-y-80",
-    busStops: [],
-  },
-  methods: {
-    busLineColor,
-  },
-  computed: {
-    nearestTotal() {
-      return this.busStops.length;
-    },
-  },
-  watch: {
-    busStops(newData, oldData) {
-      if (newData.length > 0 && oldData.length != newData.length) {
-        setTimeout(() => (this.bottomSheet = "translate-y-0"), 2100);
-      }
-    },
-  },
-});
 
 const map = new Map({
   container: "map",
@@ -39,6 +17,37 @@ const map = new Map({
   style: "mapbox://styles/ethereal97/ckvlahuqwb17h15o8gb29bb8x",
   center: [96.1462223, 16.7991965],
   zoom: 11,
+});
+
+const nearestBusStops = new Vue({
+  el: "#nearest-bus-stops",
+  data: {
+    hidden: false,
+    bottomSheet: "translate-y-60",
+    busStops: [],
+  },
+  methods: {
+    busLineColor,
+    toggleBottomSheet() {
+      if (this.hidden) {
+        this.bottomSheet = "translate-y-60";
+        return;
+      }
+      this.bottomSheet = this.busStops.length
+        ? "translate-y-0"
+        : "translate-y-60";
+    },
+    watchNearestBusStops({ lat, lng }) {
+      let range = km(1);
+      let busStops = findNearestBusStops(lng, lat, range);
+      this.busStops = busStops.slice(0, 4);
+      this.toggleBottomSheet();
+    },
+    hideNearestBusStops() {
+      this.hidden = !this.hidden;
+      this.toggleBottomSheet();
+    },
+  },
 });
 
 map.addControl(
@@ -54,6 +63,19 @@ map.addControl(
 
 map.on("move", handleEvent);
 
+window.addEventListener("load", () =>
+  document
+    .querySelector("button.mapboxgl-ctrl-geolocate")
+    .addEventListener("click", () =>
+      navigator.geolocation.watchPosition(({ coords }) =>
+        nearestBusStops.watchNearestBusStops({
+          lat: coords.latitude,
+          lng: coords.longitude,
+        })
+      )
+    )
+);
+
 function handleEvent() {
   debounce && clearTimeout(debounce);
   debounce = setTimeout(() => {
@@ -65,7 +87,6 @@ function handleEvent() {
 function generateToShowMarkers() {
   let center = map.getCenter();
   let stops = findNearestBusStops(center.lng, center.lat);
-  console.log(stops.length, typeof stops[0].bus_ids[0]);
 
   stops.map((stop) => {
     let element = document.createElement("div");
@@ -102,43 +123,3 @@ function clearAllMarkers() {
     __markers.pop().remove();
   }
 }
-
-navigator.geolocation.watchPosition(
-  ({ coords: { longitude: lng, latitude: lat } }) => {
-    let range = 0.002985;
-
-    nearestBusStops.busStops = findNearestBusStops(lng, lat, range).slice(0, 4);
-    console.log(nearestBusStops.busStops.length);
-
-    if (nearestBusStops.length === 4) return;
-
-    switch (nearestBusStops.length) {
-      case 0:
-        range += 0.000325;
-        break;
-      default:
-        range += 0.00015;
-    }
-
-    console.log(range, "new");
-    nearestBusStops.busStops = findNearestBusStops(lng, lat, range).slice(0, 4);
-  }
-);
-
-function calcDistance(start, end) {
-  const R = 6371e3; // metres
-  const φ1 = (start.lat * Math.PI) / 180; // φ, λ in radians
-  const φ2 = (end.lat * Math.PI) / 180;
-  const Δφ = ((end.lat - start.lat) * Math.PI) / 180;
-  const Δλ = ((end.lng - start.lng) * Math.PI) / 180;
-
-  const a =
-    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return R * c; // in metres
-}
-
-window.map = map;
-window.calcDistance = calcDistance;

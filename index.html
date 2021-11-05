@@ -17,7 +17,9 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/mapbox-gl@2/dist/mapbox-gl.css"
     />
+
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://animejs.com/lib/anime.min.js"></script>
     <script src="js/index.js" type="module"></script>
   </head>
   <body>
@@ -26,19 +28,21 @@
 
     <!-- nearest bus stops -->
     <div
-      class="fixed inset-x-0 bottom-0 w-full p-4 pb-10 shadow-2xl bg-white overflow-hidden rounded-t-3xl transition-all transform duration-500"
+      class="fixed inset-x-0 bottom-0 px-4 pb-8 shadow-2xl bg-white overflow-hidden rounded-t-3xl max-w-full w-96 mx-auto transition-all transform duration-500"
       :class="bottomSheet"
       id="nearest-bus-stops"
     >
-      <h6 class="font-bold text-md pb-2">
-        Bus Stops {{ nearestTotal ? `(${nearestTotal})` : '' }}
-      </h6>
-      <div class="space-y-4">
+      <div
+        class="w-32 h-1 rounded-2xl bg-gray-300 mx-auto cursor-pointer mt-3 mb-2"
+        @click="hideNearestBusStops"
+      ></div>
+      <div class="mt-4 space-y-2 divide-y divide-gray-300">
         <div
           v-for="(busStop, i) in busStops"
           :key="'bus-stop-'+i"
-          class="flex justify-between"
+          class="flex justify-between pt-2 pb-3"
         >
+          <h6>{{busStop.name}}</h6>
           <div class="flex space-x-1">
             <div
               class="w-8 h-8 flex justify-center items-center shadow rounded font-bold text-white pb-1.5"
@@ -49,13 +53,8 @@
               {{ bus_id.toBurmeseString() }}
             </div>
           </div>
-          <h6>{{busStop.name}}</h6>
-          <!-- <h6>{{busStop.distance.toFixed(4)}}</h6> -->
         </div>
       </div>
     </div>
-
-    <!-- development script   -->
-    <!-- <script src="js/dev.js"></script> -->
   </body>
 </html>
