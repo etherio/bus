@@ -49,6 +49,24 @@ const app = new Vue({
         inline: "center",
       });
     },
+    resetPlaylist() {
+      this.video = this.videos.shift();
+
+      requestAnimationFrame(() => {
+        let player = this.$refs.player;
+        player &&
+          player.addEventListener("ended", () => {
+            let video = this.videos.shift();
+            if (video) {
+              this.video = video;
+            } else {
+              this.videos = videoPlaylists;
+              this.mounted();
+            }
+            player.play().catch(() => null);
+          });
+      });
+    },
   },
   beforeMount() {
     this.stops = this.lineDetails.bus_stops.map((bus_stop_name) =>
@@ -59,21 +77,7 @@ const app = new Vue({
     );
   },
   mounted() {
-    this.video = this.videos.shift();
-    requestAnimationFrame(() => {
-      let player = this.$refs.player;
-      player &&
-        player.addEventListener("ended", () => {
-          let video = this.videos.shift();
-          if (video) {
-            this.video = video;
-          } else {
-            this.videos = videoPlaylists;
-            this.mounted();
-          }
-          player.play().catch(() => null);
-        });
-    });
+    this.resetPlaylist();
   },
 });
 

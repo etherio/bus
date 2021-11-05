@@ -46,6 +46,8 @@
       <section class="col-span-7 flex flex-col justify-between">
         <div class="flex justify-center items-center h-full">
           <video
+            #vdo
+            (click)="vdo.play()"
             v-if="video"
             autoplay
             muted
