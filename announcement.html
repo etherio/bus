@@ -48,11 +48,12 @@
           <video
             @click="$refs.player.play()"
             v-if="video"
-            autoplay
             muted
             title="video.title"
             :src="video.src"
             ref="player"
+            webkit-playsinline
+            playsinline
           ></video>
         </div>
         <div
