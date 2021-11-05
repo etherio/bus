@@ -62,15 +62,17 @@ const app = new Vue({
     this.video = this.videos.shift();
     requestAnimationFrame(() => {
       let player = this.$refs.player;
-      player.addEventListener("ended", () => {
-        let video = this.videos.shift();
-        if (video) {
-          this.video = video;
-        } else {
-          this.videos = videoPlaylists;
-          this.mounted();
-        }
-      });
+      player &&
+        player.addEventListener("ended", () => {
+          let video = this.videos.shift();
+          if (video) {
+            this.video = video;
+          } else {
+            this.videos = videoPlaylists;
+            this.mounted();
+          }
+          player.play().catch(() => null);
+        });
     });
   },
 });
