@@ -1,0 +1,10 @@
+.marker {
+  --size: 18px;
+  background-image: url("assets/bus.svg");
+  background-size: contain;
+  background-position: center center;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 4px;
+  cursor: pointer;
+}

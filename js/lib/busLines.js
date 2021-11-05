@@ -1,3 +1,15 @@
+export const BUS_LINE_COLORS = [
+  "bg-indigo-500",
+  "bg-red-400",
+  "bg-purple-400",
+  "bg-green-300",
+  "bg-brown-300",
+];
+
+export const busLineColor = (bus_id) =>
+  BUS_LINE_COLORS[busLines.find((bus) => bus.bus_id == bus_id).bus_type] ||
+  "bg-gray-200";
+
 export const busLines = [
   {
     bus_id: 1,
@@ -10650,12 +10662,4 @@ export const busLines = [
       " နည်းပညာတက္ကသိုလ်",
     ],
   },
-];
-
-export const BUS_LINE_COLORS = [
-  "bg-indigo-500",
-  "bg-red-400",
-  "bg-purple-400",
-  "bg-green-300",
-  "bg-brown-300",
 ];

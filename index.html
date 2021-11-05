@@ -17,10 +17,45 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/mapbox-gl@2/dist/mapbox-gl.css"
     />
-    <script src="js/main.js" type="module" defer></script>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="js/index.js" type="module"></script>
   </head>
   <body>
+    <!-- mapbox -->
     <div id="map" class="w-screen h-screen"></div>
-    <div></div>
+
+    <!-- nearest bus stops -->
+    <div
+      class="fixed inset-x-0 bottom-0 w-full p-4 pb-10 shadow-2xl bg-white overflow-hidden rounded-t-3xl transition-all transform duration-500"
+      :class="bottomSheet"
+      id="nearest-bus-stops"
+    >
+      <h6 class="font-bold text-md pb-2">
+        Bus Stops {{ nearestTotal ? `(${nearestTotal})` : '' }}
+      </h6>
+      <div class="space-y-4">
+        <div
+          v-for="(busStop, i) in busStops"
+          :key="'bus-stop-'+i"
+          class="flex justify-between"
+        >
+          <div class="flex space-x-1">
+            <div
+              class="w-8 h-8 flex justify-center items-center shadow rounded font-bold text-white pb-1.5"
+              :class="busLineColor(bus_id)"
+              v-for="(bus_id, n) in busStop.bus_ids"
+              :key="'line-'+n+'_'+i"
+            >
+              {{ bus_id.toBurmeseString() }}
+            </div>
+          </div>
+          <h6>{{busStop.name}}</h6>
+          <!-- <h6>{{busStop.distance.toFixed(4)}}</h6> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- development script   -->
+    <!-- <script src="js/dev.js"></script> -->
   </body>
 </html>

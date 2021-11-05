@@ -1,3 +1,5 @@
+const RANGE_WITHIN = 0.012;
+
 export const busStops = [
   {
     name: "(ဃ)ဈေး",
@@ -4886,3 +4888,20 @@ export const busStops = [
     bus_ids: ["2", "60"],
   },
 ];
+
+export function findNearestBusStops(
+  lat,
+  lng,
+  range = RANGE_WITHIN,
+  stops = busStops
+) {
+  return stops
+    .filter((stop) => {
+      let x = Math.abs(lat - stop.lat);
+      let y = Math.abs(lng - stop.lng);
+      let d = (x + y) / 2;
+      stop.distance = d;
+      return d < range;
+    })
+    .sort((a, b) => a.distance - b.distance);
+}

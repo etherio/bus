@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, , user-scalable = no"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+Myanmar:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <title>YBS - Bus Announcement</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/base.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/components.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/utilities.min.css"
+    />
+    <script src="js/announcement.js" type="module"></script>
+    <style>
+      * {
+        font-family: "Padauk", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-black">
+    <main
+      class="min-w-screen min-h-screen h-screen w-screen overflow-hidden grid grid-cols-10"
+    >
+      <!-- player -->
+      <section class="col-span-7 flex flex-col justify-between">
+        <div class="flex justify-center items-center h-full">
+          <video
+            v-if="video"
+            autoplay
+            muted
+            loop
+            title="video.title"
+            :src="video.src"
+            ref="player"
+          ></video>
+        </div>
+        <div
+          class="text-center py-2 text-xl text-gray-400 font-medium bg-gray-800"
+        >
+          <span class="font-bold text-yellow-500">{{nextStop.name}}</span>
+        </div>
+      </section>
+
+      <!-- bus stops -->
+      <section
+        class="col-span-3 bg-gray-900 text-gray-400 text-xs text-center flex justify-center font-semibold overflow-hidden"
+      >
+        <div class="pl-2">
+          <div
+            class="pt-6 pb-5 border-l-4 border-blue-800 flex relative"
+            v-for="stop in stops"
+          >
+            <div :id="generateId(stop.name + stop.lat + stop.lng)">
+              <div
+                v-if="currentStop == stop"
+                class="w-4 h-4 rounded-full bg-gray-300 -left-2.5 relative border-4 border-blue-500 shadow"
+              ></div>
+              <div
+                v-else
+                class="w-4 h-4 rounded-full bg-gray-300 -left-2.5 relative border-4 border-blue-500 shadow"
+              ></div>
+            </div>
+            <div :class="{'animate-pulse':currentStop == stop}">
+              {{ stop.name }}
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
