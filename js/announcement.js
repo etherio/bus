@@ -61,7 +61,7 @@ const app = new Vue({
               this.video = video;
             } else {
               this.videos = videoPlaylists;
-              this.mounted();
+              this.resetPlaylist();
             }
             player.play().catch(() => null);
           });
