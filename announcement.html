@@ -31,6 +31,8 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/utilities.min.css"
     />
+    <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/7.15.4/video.min.js" defer></script>
     <script src="js/announcement.js" type="module"></script>
     <style>
       * {
@@ -48,13 +50,22 @@
           <video
             @click="$refs.player.play()"
             v-if="video"
-            muted
             title="video.title"
             :src="video.src"
+            preload="auto"
             ref="player"
+            muted
+            autoplay
             webkit-playsinline
             playsinline
-          ></video>
+            data-setup="{}"
+            class="video-js h-full w-full"
+          >
+            <p class="vjs-no-js">
+              To view this video please enable JavaScript, and consider
+              upgrading to a web browser that
+            </p>
+          </video>
         </div>
         <div
           class="text-center py-2 text-xl text-gray-400 font-medium bg-gray-800"
